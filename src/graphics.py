@@ -2,27 +2,23 @@ import pygame
 
 class Window:
     def __init__(self, width, height):
-        # pygame.init()/quit() might go to the main function depending on future behavior/interactions.
-        pygame.init()
         self._screen = pygame.display.set_mode((width, height))
-        
-
         self._clock = pygame.time.Clock()
         self._is_running = True
-    
-    def run(self):
-        while self._is_running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self._is_running = False
-            
-            self._screen.fill("black")
+        pygame.display.set_caption("B-Zero")    
 
-            pygame.display.flip() # Update display.
-            
-            self._clock.tick(60) # Limit to 60 FPS.
-        
-        self.close()
+class Box:
+    def __init__(self, pos_x, pos_y, width, height):
+        self._color = (255, 255, 255)
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self._width = width
+        self._height = height
     
-    def close(self):
-        pygame.quit
+    def draw(self, win):
+        pygame.draw.rect(win, 
+                         self._color, 
+                         pygame.Rect(self.pos_x, 
+                                     self.pos_y, 
+                                     self._width, 
+                                     self._height))
