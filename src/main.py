@@ -5,7 +5,10 @@ def main():
 
     # Initial game setup.
     pygame.init()
-    screen = pygame.display.set_mode((1024,768))
+    HEIGHT = 1024
+    WIDTH = 768
+
+    screen = pygame.display.set_mode((HEIGHT, WIDTH))
     screen_color = "black"
     clock = pygame.time.Clock()
     is_running = True
@@ -16,25 +19,23 @@ def main():
     brown = (150, 75, 0)
     
     # Initialize game objects.
-    player = PlayerBox(50, 50, 20, 20, white)
-    floor = FloorBox(0, 1000, 60, 60, brown)
+    player = PlayerBox(50, 50, 20, 20, white, 10)
+    floor = FloorBox(0, 500, 60, 60, brown)
 
     # Game loop.
     while is_running:
+        clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 is_running = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
-                pygame.display.toggle_fullscreen()
         
         screen.fill(screen_color)
         player.draw(screen)
+        player.gravity()
         player.handle_keys()
         floor.draw(screen)
 
         pygame.display.flip()
-
-        clock.tick(60)
     
     pygame.quit()
 

@@ -10,7 +10,7 @@ class Box:
             color: tuple
     ):
         self._rect = pygame.rect.Rect((pos_x, pos_y, width, height))
-        self._color = color
+        self._color = color 
     
     def draw(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self._color, self._rect)
@@ -22,7 +22,8 @@ class PlayerBox(Box):
             pos_y: float, 
             width: float, 
             height: float, 
-            color: tuple
+            color: tuple,
+            speed: float
     ):
         super().__init__(
             pos_x,
@@ -30,7 +31,8 @@ class PlayerBox(Box):
             width,
             height,
             color
-        )  
+        )
+        self._speed = speed
 
     def handle_keys(self):
         key = pygame.key.get_pressed()
@@ -39,8 +41,10 @@ class PlayerBox(Box):
             self._rect.move_ip(-dist, 0)
         if key[pygame.K_RIGHT]:
             self._rect.move_ip(dist, 0)
+    
+    def gravity(self):
+        self._rect.move_ip(0, self._speed)
             
-
 class FloorBox(Box):
     def __init__(
             self,
