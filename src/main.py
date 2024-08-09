@@ -1,20 +1,31 @@
 import pygame
-from graphics import Window
+from graphics import Box
 
 def main():
 
+    # Initial game setup.
     pygame.init()
+    screen = pygame.display.set_mode((1024,768))
+    screen_color = "black"
+    clock = pygame.time.Clock()
+    is_running = True
+    pygame.display.set_caption("B-Zero")
+    
+    # Initialize player object.
+    player = Box(30, 30, 60, 60, (255,255,255))
 
-    win = Window(1024,768)
-
-    while win._is_running:
+    # Game loop.
+    while is_running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                win._is_running = False
+                is_running = False
         
-        win._screen.fill("black")
+        screen.fill(screen_color)
+        player.draw(screen)
 
-        win._clock.tick(60)
+        pygame.display.flip()
+
+        clock.tick(60)
     
     pygame.quit()
 
