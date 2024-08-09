@@ -20,7 +20,7 @@ def main():
     
     # Initialize game objects.
     player = PlayerBox(50, 50, 20, 20, white, 10)
-    floor = FloorBox(0, 500, 60, 60, brown)
+    floor = FloorBox(0, 500, 600, 60, brown)
 
     # Game loop.
     while is_running:
@@ -31,8 +31,9 @@ def main():
         
         screen.fill(screen_color)
         player.draw(screen)
-        player.gravity()
+        player.apply_gravity()
         player.handle_keys()
+        player.check_collision(floor)
         floor.draw(screen)
 
         pygame.display.flip()

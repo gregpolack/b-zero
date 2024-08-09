@@ -42,9 +42,17 @@ class PlayerBox(Box):
         if key[pygame.K_RIGHT]:
             self._rect.move_ip(dist, 0)
     
-    def gravity(self):
+    def apply_gravity(self):
         self._rect.move_ip(0, self._speed)
-            
+    
+    def check_collision(self, rect: pygame.Rect):
+        collide = pygame.Rect.colliderect(self._rect, rect._rect)
+
+        if collide:
+            # For now, just bounces off the floor indefinitely. Next step is to make it fall down again at some point.
+            self._speed = self._speed * -1
+
+                        
 class FloorBox(Box):
     def __init__(
             self,
