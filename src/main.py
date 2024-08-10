@@ -19,7 +19,7 @@ def main():
     brown = (150, 75, 0)
     
     # Initialize game objects.
-    player = PlayerBox(50, 50, 20, 20, white, 10)
+    player = PlayerBox(50, 50, 20, 20, white)
     floor = FloorBox(0, 500, 600, 60, brown)
 
     # Game loop.
