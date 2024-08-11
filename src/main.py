@@ -1,12 +1,13 @@
 import pygame
-from graphics import PlayerBox, FloorBox
+from graphics import PlayerBox
+from levels import LevelOne
 
 def main():
 
     # Initial game setup.
     pygame.init()
-    HEIGHT = 1024
-    WIDTH = 768
+    HEIGHT = 1920
+    WIDTH = 1080
 
     screen = pygame.display.set_mode((HEIGHT, WIDTH))
     screen_color = "black"
@@ -20,7 +21,7 @@ def main():
     
     # Initialize game objects.
     player = PlayerBox(50, 50, 20, 20, white)
-    floor = FloorBox(0, 500, 600, 60, brown)
+    level_one = LevelOne()
 
     # Game loop.
     while is_running:
@@ -33,8 +34,9 @@ def main():
         player.draw(screen)
         player.apply_gravity()
         player.handle_keys()
-        player.check_collision(floor)
-        floor.draw(screen)
+        player.check_collision() # Not working anymore as it functions only with single rect objects.
+        level_one.draw(screen)
+        
 
         pygame.display.flip()
     
