@@ -24,9 +24,13 @@ class LevelOne:
         ]
         self.num_rows = 15
         self.num_cols = 20
-    def draw(self, screen: pygame.Surface):
+        self.floor_tiles = pygame.sprite.Group()
+        
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 if self.game_level[i][j] == 1:
-                    self.floor = FloorBox(j * 64, i * 64, 64, 64, brown)
-                    self.floor.draw(screen)
+                    floor_tile = FloorBox(j * 50, i * 50, 50, 50)
+                    self.floor_tiles.add(floor_tile)
+        
+
+        
