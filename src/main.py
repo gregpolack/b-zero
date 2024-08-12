@@ -27,8 +27,7 @@ def main():
         
         screen.fill(screen_color)
         player.draw(screen)
-        player.apply_gravity()
-        player.handle_keys()
+        player.update()
         level.floor_tiles.draw(screen)
         level.rock_tiles.draw(screen)
         player.check_floor_collision(level.floor_tiles)

@@ -42,7 +42,7 @@ class PlayerBox(Box):
             self.rect.move_ip(dist, 0)
     
     def apply_gravity(self):
-        self.gravity += 1
+        self.gravity += 0.8
         self.rect.move_ip(0, self.gravity)
     
     def check_floor_collision(self, group):
@@ -57,6 +57,9 @@ class PlayerBox(Box):
         if collide:
             self.gravity = -13
 
+    def update(self):
+        self.handle_keys()
+        self.apply_gravity()
                         
 class FloorBox(Box):
     def __init__(
