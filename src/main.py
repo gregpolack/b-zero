@@ -1,6 +1,5 @@
 import pygame
-from graphics import PlayerBox
-from levels import LevelOne
+from graphics import PlayerBox, LevelOne
 
 def main():
 
@@ -15,12 +14,9 @@ def main():
     is_running = True
     pygame.display.set_caption("B-Zero")
 
-    # Tuples for RGB values.
-    white = (255, 255, 255)
-    
     # Initialize game objects.
-    player = PlayerBox(100, 500, 20, 20, white)
-    level_one = LevelOne()
+    player = PlayerBox(100, 500, 10, 10)
+    level = LevelOne()
 
     # Game loop.
     while is_running:
@@ -33,8 +29,10 @@ def main():
         player.draw(screen)
         player.apply_gravity()
         player.handle_keys()
-        player.check_collision(level_one.floor_tiles)
-        level_one.floor_tiles.draw(screen)
+        level.floor_tiles.draw(screen)
+        level.rock_tiles.draw(screen)
+        player.check_floor_collision(level.floor_tiles)
+        player.check_rock_collision(level.rock_tiles)
         
         pygame.display.flip()
     
