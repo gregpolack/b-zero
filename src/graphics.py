@@ -32,7 +32,9 @@ class PlayerBox(Box):
         )
         self._color = (255, 255, 255) # White.
         self.gravity = 0
-
+        self.force = 0
+        self.gravity_applied = True
+        
     def handle_keys(self):
         key = pygame.key.get_pressed()
         dist = 5
@@ -42,9 +44,14 @@ class PlayerBox(Box):
             self.rect.move_ip(dist, 0)
     
     def apply_gravity(self):
-        self.gravity += 0.8
-        self.rect.move_ip(0, self.gravity)
-    
+        if self.gravity_applied:
+            self.force = 0
+            self.gravity += 0.75
+            self.rect.move_ip(0, self.gravity)
+        
+    def apply_force(self):
+        self.rect.move_ip(self.force, 0)
+        
     def check_floor_collision(self, group):
         collide = pygame.sprite.spritecollide(self, group, dokill=False)
 
@@ -60,6 +67,7 @@ class PlayerBox(Box):
     def update(self):
         self.handle_keys()
         self.apply_gravity()
+        self.apply_force()
                         
 class FloorBox(Box):
     def __init__(
@@ -101,18 +109,18 @@ class LevelOne:
     def __init__(self):
         self.game_level = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,1,1,1],
-            [1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0],
-            [1,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,1,1,1],
+            [3,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,3],
+            [3,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0],
+            [3,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ]
@@ -120,6 +128,7 @@ class LevelOne:
         self.num_cols = 20
         self.floor_tiles = pygame.sprite.Group()
         self.rock_tiles = pygame.sprite.Group()
+        self.wall_tiles = pygame.sprite.Group()
         
         for i in range(self.num_rows):
             for j in range(self.num_cols):
@@ -129,3 +138,6 @@ class LevelOne:
                 if self.game_level[i][j] == 2:
                     rock_tile = RockBox(j * 50, i * 50, 50, 50)
                     self.rock_tiles.add(rock_tile)
+                if self.game_level[i][j] == 3:
+                    wall_tile = FloorBox(j * 50, i * 50, 50, 50)
+                    self.wall_tiles.add(wall_tile)
