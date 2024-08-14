@@ -34,6 +34,7 @@ class PlayerBox(Box):
         self.gravity = 0
         self.force = 0
         self.gravity_applied = True
+        self.level = LevelOne()
         
     def handle_keys(self):
         key = pygame.key.get_pressed()
@@ -52,10 +53,11 @@ class PlayerBox(Box):
     def apply_force(self):
         self.rect.move_ip(self.force, 0)
         
-    def check_floor_collision(self, group):
-        collide = pygame.sprite.spritecollide(self, group, dokill=False)
-
-        if collide:
+    def check_collisions(self, level):
+        collide_rock = pygame.sprite.spritecollide(self, level.rock_tiles, dokill=True)
+        collide_floor = pygame.sprite.spritecollide(self, level.floor_tiles, dokill=False)
+        
+        if collide_floor or collide_rock:
             self.gravity = -13
     
     def check_rock_collision(self, group):
