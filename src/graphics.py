@@ -56,18 +56,23 @@ class Player(Box):
         self.rect.move_ip(self.force, 0)
         
     def check_collisions(self, level):
+        collision_threshold = 5.01
+
         collide_rock = pygame.sprite.spritecollide(self, level.rock_tiles, dokill=True)
         collide_floor = pygame.sprite.spritecollide(self, level.floor_tiles, dokill=False)
-        collide_left_wall = pygame.sprite.spritecollide(self, level.left_wall_tiles, dokill=False)
-        collide_right_wall = pygame.sprite.spritecollide(self, level.right_wall_tiles, dokill=False)
         
-        if collide_floor or collide_rock:
+        if collide_floor:
+            collided_sprite = collide_floor[0]
+            if abs(self.rect.right - collided_sprite.rect.left) < collision_threshold:
+                    self.right_bounce_timer.activate()
+            elif abs(self.rect.left - collided_sprite.rect.right) < collision_threshold:
+                # This condition creates a bug when the player touches the top right corner of a floor tile.
+                self.left_bounce_timer.activate()
+            else:
+                self.gravity = -13
+        if collide_rock:
             self.gravity = -13
-        if collide_left_wall:
-            self.left_bounce_timer.activate()
-        if collide_right_wall:
-            self.right_bounce_timer.activate()
-
+        
         self.left_bounce_timer.update()
         self.right_bounce_timer.update()
 
@@ -84,7 +89,7 @@ class Player(Box):
         pygame.event.set_blocked([self.key[pygame.K_LEFT]])
         pygame.event.set_blocked([self.key[pygame.K_RIGHT]])
         self.gravity_applied = False
-        self.rect.move_ip(0, -5)
+        self.rect.move_ip(0, -2.5)
         
     def update(self, level):
         self.handle_keys()
@@ -132,18 +137,18 @@ class LevelOne:
     def __init__(self):
         self.game_level = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,1,1,1],
-            [3,0,0,0,0,0,0,0,0,1,1,1,3,0,0,0,0,0,0,4],
-            [3,0,0,0,0,0,0,1,1,1,1,1,3,0,0,0,0,0,0,0],
-            [3,0,0,0,1,1,1,1,1,1,1,1,3,0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,1,1,1],
+            [1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0],
+            [1,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ]
@@ -162,12 +167,6 @@ class LevelOne:
                 if self.game_level[i][j] == 2:
                     rock_tile = Rock(j * 50, i * 50, 50, 50)
                     self.rock_tiles.add(rock_tile)
-                if self.game_level[i][j] == 3:
-                    left_wall_tile = Floor(j * 50, i * 50, 50, 50)
-                    self.left_wall_tiles.add(left_wall_tile)
-                if self.game_level[i][j] == 4:
-                    right_wall_tile = Floor(j * 50, i * 50, 50, 50)
-                    self.right_wall_tiles.add(right_wall_tile)
     
     def draw(self, screen):
         self.groups = [
