@@ -66,10 +66,11 @@ class PlayerBox(Box):
         if collide:
             self.gravity = -13
 
-    def update(self):
+    def update(self, level):
         self.handle_keys()
         self.apply_gravity()
         self.apply_force()
+        self.check_collisions(level)
                         
 class FloorBox(Box):
     def __init__(
@@ -143,3 +144,9 @@ class LevelOne:
                 if self.game_level[i][j] == 3:
                     wall_tile = FloorBox(j * 50, i * 50, 50, 50)
                     self.wall_tiles.add(wall_tile)
+    
+    def draw(self, screen):
+        self.groups = [self.floor_tiles, self.rock_tiles, self.wall_tiles]
+
+        for group in self.groups:
+            group.draw(screen)

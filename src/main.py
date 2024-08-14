@@ -31,12 +31,13 @@ def main():
         
         screen.fill(screen_color)
         player.draw(screen)
-        player.update()
-        player.check_collisions(level)
+        player.update(level)
+        level.draw(screen)
+        '''
         level.floor_tiles.draw(screen)
         level.rock_tiles.draw(screen)
         level.wall_tiles.draw(screen)
-
+        '''
         # Wall collision logic.
         collide_wall = pygame.sprite.spritecollide(player, level.wall_tiles, dokill=False)
         if collide_wall:
