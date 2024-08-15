@@ -1,5 +1,5 @@
 import pygame
-from graphics import Player, LevelOne
+from graphics import *
 
 def main():
 
@@ -17,8 +17,11 @@ def main():
 
     # Initialize game objects.
     player = Player(100, 500, 10, 10)
-    level = LevelOne()
-
+    level_one = Level()
+    level_two = LevelTwo()
+    current_level = level_one
+    current_level.load_sprites()
+    
     # Game loop.
     
     while is_running:
@@ -26,12 +29,17 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 is_running = False
-        
         screen.fill(screen_color)
         player.draw(screen)
-        player.update(level)
-        level.draw(screen)
-    
+        player.update(current_level)
+        current_level.draw(screen)
+
+        if player.rect.x >= 1000 and current_level == level_one:
+            player.disable_input_and_lift()
+            current_level = level_two
+            player = Player(100, 300, 10, 10)
+            current_level.load_sprites()
+        
         pygame.display.flip()
     
     pygame.quit()
