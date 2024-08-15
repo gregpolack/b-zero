@@ -34,42 +34,43 @@ class Player(Box):
         self._color = (255, 255, 255) # White.
         self.gravity = 0
         self.force = 0
+        self.speed = 5
+        self.direction = pygame.Vector2()
         self.gravity_applied = True
         self.left_bounce_timer = Timer(150)
         self.right_bounce_timer = Timer(150)
         
     def handle_keys(self):
         self.key = pygame.key.get_pressed()
-        dist = 5
-        if self.key[pygame.K_LEFT]:
-            self.rect.move_ip(-dist, 0)
-        if self.key[pygame.K_RIGHT]:
-            self.rect.move_ip(dist, 0)
-    
+        
+        self.direction.x = int(self.key[pygame.K_RIGHT]) - int(self.key[pygame.K_LEFT])
+        self.rect.center += self.direction * self.speed
+
     def apply_gravity(self):
         if self.gravity_applied:
             self.force = 0
-            self.gravity += 0.75
+            self.gravity += 0.8
             self.rect.move_ip(0, self.gravity)
         
     def apply_force(self):
         self.rect.move_ip(self.force, 0)
         
     def check_collisions(self, level):
-        collision_threshold = 5.01
 
+        collision_threshold = 13.01
+        
         collide_rock = pygame.sprite.spritecollide(self, level.rock_tiles, dokill=True)
         collide_floor = pygame.sprite.spritecollide(self, level.floor_tiles, dokill=False)
-        
+
         if collide_floor:
             collided_sprite = collide_floor[0]
-            if abs(self.rect.right - collided_sprite.rect.left) < collision_threshold:
-                    self.right_bounce_timer.activate()
-            elif abs(self.rect.left - collided_sprite.rect.right) < collision_threshold:
-                # This condition creates a bug when the player touches the top right corner of a floor tile.
-                self.left_bounce_timer.activate()
-            else:
+            if abs(self.rect.bottom - collided_sprite.rect.top) < collision_threshold:
                 self.gravity = -13
+            elif abs(self.rect.right - collided_sprite.rect.left) < collision_threshold:
+                    self.left_bounce_timer.activate()
+            elif abs(self.rect.left - collided_sprite.rect.right) < collision_threshold:
+                    self.right_bounce_timer.activate()
+        
         if collide_rock:
             self.gravity = -13
         
@@ -78,10 +79,10 @@ class Player(Box):
 
         if self.left_bounce_timer.is_active:
             self.disable_input_and_lift()
-            self.force = 13
+            self.force = -13
         elif self.right_bounce_timer.is_active:
             self.disable_input_and_lift()
-            self.force = -13
+            self.force = 13
         else:
             self.gravity_applied = True
     
@@ -156,8 +157,6 @@ class LevelOne:
         self.num_cols = 20
         self.floor_tiles = pygame.sprite.Group()
         self.rock_tiles = pygame.sprite.Group()
-        self.left_wall_tiles = pygame.sprite.Group()
-        self.right_wall_tiles = pygame.sprite.Group()
         
         for i in range(self.num_rows):
             for j in range(self.num_cols):
@@ -171,9 +170,7 @@ class LevelOne:
     def draw(self, screen):
         self.groups = [
             self.floor_tiles,
-            self.rock_tiles,
-            self.left_wall_tiles,
-            self.right_wall_tiles
+            self.rock_tiles
         ]
 
         for group in self.groups:
