@@ -9,7 +9,7 @@ def main():
     WIDTH = 750
     FPS = 45
 
-    screen = pygame.display.set_mode((HEIGHT, WIDTH))
+    screen = pygame.display.set_mode((HEIGHT, WIDTH), pygame.SCALED|pygame.RESIZABLE)
     screen_color = "black"
     clock = pygame.time.Clock()
     is_running = True
@@ -37,7 +37,7 @@ def main():
         if player.rect.x >= 1000 and current_level == level_one:
             player.disable_input_and_lift()
             current_level = level_two
-            player = Player(100, 300, 10, 10)
+            player = Player(100, 250, 10, 10)
             current_level.load_sprites()
         
         pygame.display.flip()
