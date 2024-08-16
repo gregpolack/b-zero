@@ -59,8 +59,8 @@ class Player(Box):
 
         collision_threshold = 17
         
-        collide_rock = pygame.sprite.spritecollide(self, level.rock_tiles, dokill=True)
-        collide_floor = pygame.sprite.spritecollide(self, level.floor_tiles, dokill=False)
+        collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=True)
+        collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
 
         if collide_floor:
             collided_sprite = collide_floor[0]
@@ -134,6 +134,24 @@ class Rock(Box):
         )
         self.image = pygame.image.load("./assets/Rock.jpg").convert()
 
+class Boost(Box):
+    def __init__(
+            self,
+            pos_x: float,
+            pos_y: float,
+            width: float,
+            height: float,
+            color = None 
+    ):
+        super().__init__(
+            pos_x,
+            pos_y,
+            width,
+            height,
+            color
+        )
+        self.image = pygame.image.load("./assets/Arrow_box.jpg").convert()
+
 class Level:
     layout = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -155,25 +173,28 @@ class Level:
     def __init__(self):
         self.num_rows = 15
         self.num_cols = 20
-        self.floor_tiles = pygame.sprite.Group()
-        self.rock_tiles = pygame.sprite.Group()
-        self.exit_tiles = pygame.sprite.Group()
+        self.floor = pygame.sprite.Group()
+        self.rocks = pygame.sprite.Group()
+        self.boosts = pygame.sprite.Group()
     
     def load_sprites(self):
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 if self.layout[i][j] == 1:
                     floor_tile = Floor(j * 50, i * 50, 50, 50)
-                    self.floor_tiles.add(floor_tile)
+                    self.floor.add(floor_tile)
                 if self.layout[i][j] == 2:
                     rock_tile = Rock(j * 50, i * 50, 50, 50)
-                    self.rock_tiles.add(rock_tile)
+                    self.rocks.add(rock_tile)
+                if self.layout[i][j] == 3:
+                    boost = Boost(j * 50, i * 50, 50, 50)
+                    self.boosts.add(boost)
 
     def draw(self, screen):
         self.groups = [
-            self.floor_tiles,
-            self.rock_tiles,
-            self.exit_tiles
+            self.floor,
+            self.rocks,
+            self.boosts
         ]
 
         for group in self.groups:
@@ -189,8 +210,8 @@ class LevelTwo(Level):
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [1,1,1,1,0,0,0,0,0,1,1,1,1,0,1,1,1,1,1,1],
             [1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1],
             [1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -212,9 +233,9 @@ class LevelThree(Level):
             [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,0,0,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,3],
+            [1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,3,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1]
