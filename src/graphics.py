@@ -58,11 +58,12 @@ class Player(Box):
         
     def check_collisions(self, level):
 
-        collision_threshold = 17
+        collision_threshold = 17 # Precise value to be decided.
         
         collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=True)
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
-        collide_boost = pygame.sprite.spritecollide(self, level.h_boosts, dokill=False)
+        collide_h_boost = pygame.sprite.spritecollide(self, level.h_boosts, dokill=False)
+        collide_j_boost = pygame.sprite.spritecollide(self, level.j_boosts, dokill=False)
 
         # Floor collision.
         if collide_floor:
@@ -73,7 +74,17 @@ class Player(Box):
                     self.left_bounce_timer.activate()
             elif abs(self.rect.left - collided_sprite.rect.right) < collision_threshold:
                     self.right_bounce_timer.activate()
-
+        
+        # Vertical Boost collision.
+        if collide_j_boost:
+            collided_sprite = collide_j_boost[0]
+            if abs(self.rect.bottom - collided_sprite.rect.top) < collision_threshold:
+                self.gravity = -18
+            elif abs(self.rect.right - collided_sprite.rect.left) < collision_threshold:
+                    self.left_bounce_timer.activate()
+            elif abs(self.rect.left - collided_sprite.rect.right) < collision_threshold:
+                    self.right_bounce_timer.activate()
+        
         self.left_bounce_timer.update()
         self.right_bounce_timer.update()
 
@@ -90,9 +101,9 @@ class Player(Box):
         if collide_rock:
             self.gravity = -13
         
-        # Boost collision.
-        if collide_boost:
-            collided_sprite = collide_boost[0]
+        # Horizontal Boost collision.
+        if collide_h_boost:
+            collided_sprite = collide_h_boost[0]
             self.rect.y = collided_sprite.rect.y + 15
             self.rect.x = collided_sprite.rect.x + 50
             self.boost_timer.activate()
@@ -102,7 +113,7 @@ class Player(Box):
             self.gravity_applied = False
             self.gravity = 0
             self.force = 16
-
+        
     def disable_input_and_lift(self):
         pygame.event.set_blocked([self.key[pygame.K_LEFT]])
         pygame.event.set_blocked([self.key[pygame.K_RIGHT]])
@@ -169,7 +180,7 @@ class HorizontalBoost(Box):
         )
         self.image = pygame.image.load("./assets/Arrow_box.jpg").convert()
 
-class JumpBoost(Box):
+class VerticalBoost(Box):
     def __init__(
             self,
             pos_x: float,
@@ -223,7 +234,7 @@ class Level:
                 if self.layout[i][j] == 3:
                     self.h_boosts.add(HorizontalBoost(j * 50, i * 50, 50, 50))
                 if self.layout[i][j] == 4:
-                    self.j_boosts.add(JumpBoost(j * 50, i * 50, 50, 50))
+                    self.j_boosts.add(VerticalBoost(j * 50, i * 50, 50, 50))
 
     def draw(self, screen):
         self.groups = [
