@@ -62,7 +62,7 @@ class Player(Box):
         
         collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=True)
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
-        collide_boost = pygame.sprite.spritecollide(self, level.boosts, dokill=False)
+        collide_boost = pygame.sprite.spritecollide(self, level.h_boosts, dokill=False)
 
         # Floor collision.
         if collide_floor:
@@ -151,7 +151,7 @@ class Rock(Box):
         )
         self.image = pygame.image.load("./assets/Rock.jpg").convert()
 
-class Boost(Box):
+class HorizontalBoost(Box):
     def __init__(
             self,
             pos_x: float,
@@ -168,6 +168,24 @@ class Boost(Box):
             color
         )
         self.image = pygame.image.load("./assets/Arrow_box.jpg").convert()
+
+class JumpBoost(Box):
+    def __init__(
+            self,
+            pos_x: float,
+            pos_y: float,
+            width: float,
+            height: float,
+            color = None 
+    ):
+        super().__init__(
+            pos_x,
+            pos_y,
+            width,
+            height,
+            color
+        )
+        self.image = pygame.image.load("./assets/JumpBoost.jpg").convert()
 
 class Level:
     layout = [
@@ -192,26 +210,27 @@ class Level:
         self.num_cols = 20
         self.floor = pygame.sprite.Group()
         self.rocks = pygame.sprite.Group()
-        self.boosts = pygame.sprite.Group()
+        self.h_boosts = pygame.sprite.Group()
+        self.j_boosts = pygame.sprite.Group()
     
     def load_sprites(self):
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 if self.layout[i][j] == 1:
-                    floor_tile = Floor(j * 50, i * 50, 50, 50)
-                    self.floor.add(floor_tile)
+                    self.floor.add(Floor(j * 50, i * 50, 50, 50))
                 if self.layout[i][j] == 2:
-                    rock_tile = Rock(j * 50, i * 50, 50, 50)
-                    self.rocks.add(rock_tile)
+                    self.rocks.add(Rock(j * 50, i * 50, 50, 50))
                 if self.layout[i][j] == 3:
-                    boost = Boost(j * 50, i * 50, 50, 50)
-                    self.boosts.add(boost)
+                    self.h_boosts.add(HorizontalBoost(j * 50, i * 50, 50, 50))
+                if self.layout[i][j] == 4:
+                    self.j_boosts.add(JumpBoost(j * 50, i * 50, 50, 50))
 
     def draw(self, screen):
         self.groups = [
             self.floor,
             self.rocks,
-            self.boosts
+            self.h_boosts,
+            self.j_boosts
         ]
 
         for group in self.groups:
@@ -273,7 +292,7 @@ class LevelFour(Level):
             [1,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,1,1,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1],
             [1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
