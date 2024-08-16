@@ -50,7 +50,7 @@ class Player(Box):
     def apply_gravity(self):
         if self.gravity_applied:
             self.force = 0
-            self.gravity += 0.8
+            self.gravity += 0.7
             self.rect.move_ip(0, self.gravity)
         
     def apply_force(self):
@@ -58,9 +58,13 @@ class Player(Box):
         
     def check_collisions(self, level):
 
-        collision_threshold = 17 # Precise value to be decided.
+        # Precise threshold values to be decided. Needs to get sorted before level five is done.
+
+        h_collision_threshold = 17
+        v_collision_threshold = 19
+        bottom_collision_threshold = 17
         
-        collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=True)
+        collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=False)
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
         collide_h_boost = pygame.sprite.spritecollide(self, level.h_boosts, dokill=False)
         collide_j_boost = pygame.sprite.spritecollide(self, level.j_boosts, dokill=False)
@@ -68,21 +72,34 @@ class Player(Box):
         # Floor collision.
         if collide_floor:
             collided_sprite = collide_floor[0]
-            if abs(self.rect.bottom - collided_sprite.rect.top) < collision_threshold:
+            if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
                 self.gravity = -13
-            elif abs(self.rect.right - collided_sprite.rect.left) < collision_threshold:
-                    self.left_bounce_timer.activate()
-            elif abs(self.rect.left - collided_sprite.rect.right) < collision_threshold:
-                    self.right_bounce_timer.activate()
+            elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
+                self.left_bounce_timer.activate()
+            elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
+                self.right_bounce_timer.activate()
+            elif abs(self.rect.top - collided_sprite.rect.bottom) < bottom_collision_threshold:
+                self.left_bounce_timer.activate()
         
+        # Rock collision.
+        if collide_rock:
+            collided_sprite = collide_rock[0]
+            if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
+                collided_sprite.kill()
+                self.gravity = -13
+            elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
+                    self.left_bounce_timer.activate()
+            elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
+                    self.right_bounce_timer.activate()
+
         # Vertical Boost collision.
         if collide_j_boost:
             collided_sprite = collide_j_boost[0]
-            if abs(self.rect.bottom - collided_sprite.rect.top) < collision_threshold:
+            if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
                 self.gravity = -18
-            elif abs(self.rect.right - collided_sprite.rect.left) < collision_threshold:
+            elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
                     self.left_bounce_timer.activate()
-            elif abs(self.rect.left - collided_sprite.rect.right) < collision_threshold:
+            elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
                     self.right_bounce_timer.activate()
         
         self.left_bounce_timer.update()
@@ -90,17 +107,13 @@ class Player(Box):
 
         if self.left_bounce_timer.is_active:
             self.disable_input_and_lift()
-            self.force = -13
+            self.force = -12
         elif self.right_bounce_timer.is_active:
             self.disable_input_and_lift()
-            self.force = 13
+            self.force = 12
         else:
             self.gravity_applied = True
 
-        # Rock collision.
-        if collide_rock:
-            self.gravity = -13
-        
         # Horizontal Boost collision.
         if collide_h_boost:
             collided_sprite = collide_h_boost[0]
@@ -118,7 +131,7 @@ class Player(Box):
         pygame.event.set_blocked([self.key[pygame.K_LEFT]])
         pygame.event.set_blocked([self.key[pygame.K_RIGHT]])
         self.gravity_applied = False
-        self.rect.move_ip(0, -2)
+        self.rect.move_ip(0, -0.1)
         
     def update(self, level):
         self.handle_keys()
@@ -308,6 +321,28 @@ class LevelFour(Level):
             [1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1]
+        ]
+        
+    def __init__(self):
+        super().__init__()
+
+class LevelFive(Level):
+    layout = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
+            [1,0,0,0,1,1,1,1,2,2,2,4,0,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1]
         ]
         
     def __init__(self):
