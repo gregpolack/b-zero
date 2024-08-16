@@ -13,7 +13,7 @@ class Box(pygame.sprite.Sprite):
         super().__init__()
         self.rect = pygame.rect.Rect((pos_x, pos_y, width, height))
         self._color = color
-    
+
     def draw(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self._color, self.rect)
 
@@ -39,6 +39,7 @@ class Player(Box):
         self.gravity_applied = True
         self.left_bounce_timer = Timer(150)
         self.right_bounce_timer = Timer(150)
+        self.boost_timer = Timer(1000)
         
     def handle_keys(self):
         self.key = pygame.key.get_pressed()
@@ -61,7 +62,9 @@ class Player(Box):
         
         collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=True)
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
+        collide_boost = pygame.sprite.spritecollide(self, level.boosts, dokill=False)
 
+        # Floor collision.
         if collide_floor:
             collided_sprite = collide_floor[0]
             if abs(self.rect.bottom - collided_sprite.rect.top) < collision_threshold:
@@ -82,9 +85,23 @@ class Player(Box):
             self.force = 13
         else:
             self.gravity_applied = True
-    
+
+        # Rock collision.
         if collide_rock:
             self.gravity = -13
+        
+        # Boost collision.
+        if collide_boost:
+            collided_sprite = collide_boost[0]
+            self.rect.y = collided_sprite.rect.y + 15
+            self.rect.x = collided_sprite.rect.x + 50
+            self.boost_timer.activate()
+        
+        self.boost_timer.update()
+        if self.boost_timer.is_active:
+            self.gravity_applied = False
+            self.gravity = 0
+            self.force = 16
 
     def disable_input_and_lift(self):
         pygame.event.set_blocked([self.key[pygame.K_LEFT]])
