@@ -8,23 +8,22 @@ def main():
     HEIGHT = 1000
     WIDTH = 750
     FPS = 45
-
     screen = pygame.display.set_mode((HEIGHT, WIDTH), pygame.SCALED | pygame.RESIZABLE)
     screen_color = "black"
     clock = pygame.time.Clock()
     is_running = True
     pygame.display.set_caption("B-Zero")
 
-    # Initialize game objects.
+    # Initialize player and levels.
     player = Player(100, 500, 10, 10)
     level_one = Level()
     level_two = LevelTwo()
     level_three = LevelThree()
+    level_four = LevelFour()
     current_level = level_one
     current_level.load_sprites()
     
     # Game loop.
-    
     while is_running:
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -35,6 +34,7 @@ def main():
         player.update(current_level)
         current_level.draw(screen)
 
+        # Level switching logic.
         if player.rect.x >= 1000 and current_level == level_one:
             current_level = level_two
             player = Player(100, 250, 10, 10)
@@ -43,7 +43,11 @@ def main():
             current_level = level_three
             player = Player(100, 50, 10, 10)
             current_level.load_sprites()
-            
+        if player.rect.x >= 1000 and current_level == level_three:
+            current_level = level_four
+            player = Player(100, 350, 10, 10)
+            current_level.load_sprites()
+
         pygame.display.flip()
     
     pygame.quit()
