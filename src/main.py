@@ -15,8 +15,7 @@ def main():
     pygame.display.set_caption("B-Zero")
 
     # Initialize player and levels.
-    # player = Player(100, 500, 10, 10)
-    player = Player(100, 50, 8, 8)
+    player = Player(100, 500, 7, 7)
     level_one = Level()
     level_two = LevelTwo()
     level_three = LevelThree()
@@ -39,21 +38,20 @@ def main():
         # Level switching logic.
         if player.rect.x >= 1000 and current_level == level_one:
             current_level = level_two
-            player = Player(100, 250, 8, 8)
+            player = Player(100, 250, 7, 7)
             current_level.load_sprites()
         if player.rect.x >= 1000 and current_level == level_two:
             current_level = level_three
-            player = Player(100, 50, 8, 8)
+            player = Player(100, 50, 7, 7)
             current_level.load_sprites()
         if player.rect.x >= 1000 and current_level == level_three:
             current_level = level_four
-            player = Player(100, 350, 8, 8)
+            player = Player(100, 350, 7, 7)
             current_level.load_sprites()
         if player.rect.x >= 1000 and current_level == level_four:
             current_level = level_five
-            player = Player(100, 50, 8, 8)
+            player = Player(100, 50, 7, 7)
             current_level.load_sprites()
-
 
         pygame.display.flip()
     
