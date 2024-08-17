@@ -50,7 +50,7 @@ class Player(Box):
     def apply_gravity(self):
         if self.gravity_applied:
             self.force = 0
-            self.gravity += 0.7
+            self.gravity += 0.65
             self.rect.move_ip(0, self.gravity)
         
     def apply_force(self):
@@ -61,7 +61,7 @@ class Player(Box):
         # Precise threshold values to be decided. Needs to get sorted before level five is done.
 
         h_collision_threshold = 17
-        v_collision_threshold = 19
+        v_collision_threshold = 22
         bottom_collision_threshold = 17
         
         collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=False)
@@ -73,7 +73,7 @@ class Player(Box):
         if collide_floor:
             collided_sprite = collide_floor[0]
             if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
-                self.gravity = -13
+                self.gravity = -11
             elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
                 self.left_bounce_timer.activate()
             elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
@@ -86,7 +86,7 @@ class Player(Box):
             collided_sprite = collide_rock[0]
             if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
                 collided_sprite.kill()
-                self.gravity = -13
+                self.gravity = -11
             elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
                     self.left_bounce_timer.activate()
             elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
@@ -107,10 +107,10 @@ class Player(Box):
 
         if self.left_bounce_timer.is_active:
             self.disable_input_and_lift()
-            self.force = -12
+            self.force = -11
         elif self.right_bounce_timer.is_active:
             self.disable_input_and_lift()
-            self.force = 12
+            self.force = 11
         else:
             self.gravity_applied = True
 
