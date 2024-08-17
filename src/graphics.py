@@ -58,7 +58,7 @@ class Player(Box):
         
     def check_collisions(self, level):
 
-        # Precise threshold values to be decided. Needs to get sorted before level five is done.
+        # Precise threshold values to be decided.
 
         h_collision_threshold = 17
         v_collision_threshold = 22
