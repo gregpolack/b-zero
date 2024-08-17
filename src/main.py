@@ -21,6 +21,7 @@ def main():
     level_three = LevelThree()
     level_four = LevelFour()
     level_five = LevelFive()
+    level_six = LevelSix()
     current_level = level_one
     current_level.load_sprites()
     
@@ -51,6 +52,10 @@ def main():
         if player.rect.x >= 1000 and current_level == level_four:
             current_level = level_five
             player = Player(100, 50, 7, 7)
+            current_level.load_sprites()
+        if player.rect.x >= 1000 and current_level == level_five:
+            current_level = level_six
+            player = Player(800, 50, 7, 7)
             current_level.load_sprites()
 
         pygame.display.flip()
