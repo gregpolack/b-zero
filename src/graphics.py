@@ -8,11 +8,9 @@ class Box(pygame.sprite.Sprite):
             pos_y: float, 
             width: float, 
             height: float,
-            color = None 
     ):
         super().__init__()
         self.rect = pygame.rect.Rect((pos_x, pos_y, width, height))
-        self._color = color
 
     def draw(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self._color, self.rect)
@@ -149,96 +147,22 @@ class Player(Box):
         self.apply_force()
         self.check_collisions(level)
                         
-class Floor(Box):
+class Tile(Box):
     def __init__(
             self,
             pos_x: float,
             pos_y: float,
             width: float,
             height: float,
-            color = None 
+            asset_path: str
     ):
         super().__init__(
             pos_x,
             pos_y,
             width,
             height,
-            color
         )
-        self.image = pygame.image.load("./assets/Box.jpg").convert()
-
-class Rock(Box):
-    def __init__(
-            self,
-            pos_x: float,
-            pos_y: float,
-            width: float,
-            height: float,
-            color = None 
-    ):
-        super().__init__(
-            pos_x,
-            pos_y,
-            width,
-            height,
-            color
-        )
-        self.image = pygame.image.load("./assets/Rock.jpg").convert()
-
-class HorizontalBoost(Box):
-    def __init__(
-            self,
-            pos_x: float,
-            pos_y: float,
-            width: float,
-            height: float,
-            color = None 
-    ):
-        super().__init__(
-            pos_x,
-            pos_y,
-            width,
-            height,
-            color
-        )
-        self.image = pygame.image.load("./assets/Arrow_box.jpg").convert()
-
-class VerticalBoost(Box):
-    def __init__(
-            self,
-            pos_x: float,
-            pos_y: float,
-            width: float,
-            height: float,
-            color = None 
-    ):
-        super().__init__(
-            pos_x,
-            pos_y,
-            width,
-            height,
-            color
-        )
-        self.image = pygame.image.load("./assets/JumpBoost.jpg").convert()
-
-class Bomb(Box):
-    def __init__(
-            self,
-            pos_x: float,
-            pos_y: float,
-            width: float,
-            height: float,
-            color = None 
-    ):
-        super().__init__(
-            pos_x,
-            pos_y,
-            width,
-            height,
-            color
-        )
-        self.image = pygame.image.load("./assets/Bomb.jpg").convert()
-
+        self.image = pygame.image.load(asset_path).convert()
 
 class Level:
     layout = [
@@ -271,15 +195,15 @@ class Level:
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 if self.layout[i][j] == 1:
-                    self.floor.add(Floor(j * 50, i * 50, 50, 50))
+                    self.floor.add(Tile(j * 50, i * 50, 50, 50, "./assets/Box.jpg"))
                 if self.layout[i][j] == 2:
-                    self.rocks.add(Rock(j * 50, i * 50, 50, 50))
+                    self.rocks.add(Tile(j * 50, i * 50, 50, 50, "./assets/Rock.jpg"))
                 if self.layout[i][j] == 3:
-                    self.h_boosts.add(HorizontalBoost(j * 50, i * 50, 50, 50))
+                    self.h_boosts.add(Tile(j * 50, i * 50, 50, 50, "./assets/Arrow_box.jpg"))
                 if self.layout[i][j] == 4:
-                    self.j_boosts.add(VerticalBoost(j * 50, i * 50, 50, 50))
+                    self.j_boosts.add(Tile(j * 50, i * 50, 50, 50, "./assets/JumpBoost.jpg"))
                 if self.layout[i][j] == 5:
-                    self.bombs.add(Bomb(j * 50, i * 50, 50, 50))
+                    self.bombs.add(Tile(j * 50, i * 50, 50, 50, "./assets/Bomb.jpg"))
 
     def draw(self, screen):
         self.groups = [

@@ -15,15 +15,14 @@ def main():
     pygame.display.set_caption("B-Zero")
 
     # Initialize player and levels.
-    # player = Player(100, 500, 7, 7)
-    player = Player(800, 50, 7, 7)
+    player = Player(100, 500, 7, 7)
     level_one = Level()
     level_two = LevelTwo()
     level_three = LevelThree()
     level_four = LevelFour()
     level_five = LevelFive()
     level_six = LevelSix()
-    current_level = level_six
+    current_level = level_one
     current_level.load_sprites()
     
     # Game loop.
