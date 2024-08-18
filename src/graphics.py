@@ -39,7 +39,7 @@ class Player(Box):
         self.gravity_applied = True
         self.left_bounce_timer = Timer(150)
         self.right_bounce_timer = Timer(150)
-        self.boost_timer = Timer(1000)
+        self.boost_timer = Timer(1600)
         
     def handle_keys(self):
         self.key = pygame.key.get_pressed()
@@ -60,7 +60,7 @@ class Player(Box):
 
         # Precise threshold values to be decided.
 
-        h_collision_threshold = 17
+        h_collision_threshold = 18
         v_collision_threshold = 22
         bottom_collision_threshold = 17
         
@@ -68,6 +68,7 @@ class Player(Box):
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
         collide_h_boost = pygame.sprite.spritecollide(self, level.h_boosts, dokill=False)
         collide_j_boost = pygame.sprite.spritecollide(self, level.j_boosts, dokill=False)
+        collide_bomb = pygame.sprite.spritecollide(self, level.bombs, dokill=False)
 
         # Floor collision.
         if collide_floor:
@@ -75,8 +76,10 @@ class Player(Box):
             if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
                 self.gravity = -11
             elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
+                self.boost_timer.deactivate() # Deactivate Vertical Boost when player touches a wall.
                 self.left_bounce_timer.activate()
             elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
+                self.boost_timer.deactivate()
                 self.right_bounce_timer.activate()
             elif abs(self.rect.top - collided_sprite.rect.bottom) < bottom_collision_threshold:
                 self.left_bounce_timer.activate()
@@ -125,7 +128,7 @@ class Player(Box):
         if self.boost_timer.is_active:
             self.gravity_applied = False
             self.gravity = 0
-            self.force = 16
+            self.force = 11
         
     def disable_input_and_lift(self):
         pygame.event.set_blocked([self.key[pygame.K_LEFT]])
@@ -243,9 +246,9 @@ class Level:
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
             [1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,1,1,1],
             [1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,1],
-            [1,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1],
             [1,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ]
     def __init__(self):
@@ -255,6 +258,7 @@ class Level:
         self.rocks = pygame.sprite.Group()
         self.h_boosts = pygame.sprite.Group()
         self.j_boosts = pygame.sprite.Group()
+        self.bombs = pygame.sprite.Group()
     
     def load_sprites(self):
         for i in range(self.num_rows):
@@ -268,14 +272,15 @@ class Level:
                 if self.layout[i][j] == 4:
                     self.j_boosts.add(VerticalBoost(j * 50, i * 50, 50, 50))
                 if self.layout[i][j] == 5:
-                    self.j_boosts.add(Bomb(j * 50, i * 50, 50, 50))
+                    self.bombs.add(Bomb(j * 50, i * 50, 50, 50))
 
     def draw(self, screen):
         self.groups = [
             self.floor,
             self.rocks,
             self.h_boosts,
-            self.j_boosts
+            self.j_boosts,
+            self.bombs
         ]
 
         for group in self.groups:
