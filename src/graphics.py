@@ -62,7 +62,7 @@ class Player(Box):
 
         h_collision_threshold = 18
         v_collision_threshold = 22
-        bottom_collision_threshold = 17
+        # bottom_collision_threshold = 17
         
         collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=False)
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
@@ -81,8 +81,12 @@ class Player(Box):
             elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
                 self.boost_timer.deactivate()
                 self.right_bounce_timer.activate()
+
+            '''
+            Not needed now but could be useful later.
             elif abs(self.rect.top - collided_sprite.rect.bottom) < bottom_collision_threshold:
                 self.left_bounce_timer.activate()
+            '''
         
         # Rock collision.
         if collide_rock:
@@ -104,6 +108,9 @@ class Player(Box):
                     self.left_bounce_timer.activate()
             elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
                     self.right_bounce_timer.activate()
+        
+        if collide_bomb:
+            self.gravity = -70
         
         self.left_bounce_timer.update()
         self.right_bounce_timer.update()
@@ -128,7 +135,7 @@ class Player(Box):
         if self.boost_timer.is_active:
             self.gravity_applied = False
             self.gravity = 0
-            self.force = 11
+            self.force = 12
         
     def disable_input_and_lift(self):
         pygame.event.set_blocked([self.key[pygame.K_LEFT]])
