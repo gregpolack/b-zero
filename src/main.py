@@ -23,6 +23,10 @@ def main():
     level_five = LevelFive()
     level_six = LevelSix()
     level_seven = LevelSeven()
+    font = pygame.font.SysFont(None, 88)
+    text = font.render("Game over", True, "white")
+    text_rect = text.get_rect()
+    text_rect.center = (HEIGHT // 2, WIDTH // 2)
     current_level = level_one
     current_level.load_sprites()
     
@@ -62,7 +66,10 @@ def main():
             current_level = level_seven
             player = Player(100, 500, 7, 7)
             current_level.load_sprites()
-
+        if player.rect.x < 0 or player.rect.y > 750 or player.rect.y < 0:
+            screen.fill(screen_color)
+            screen.blit(text, text_rect)
+            
         pygame.display.flip()
     
     pygame.quit()
