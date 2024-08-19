@@ -19,8 +19,8 @@ class Player(Box):
         self.speed = 5
         self.direction = pygame.Vector2()
         self.gravity_applied = True
-        self.left_bounce_timer = Timer(200)
-        self.right_bounce_timer = Timer(200)
+        self.left_bounce_timer = Timer(210)
+        self.right_bounce_timer = Timer(210)
         self.boost_timer = Timer(1600)
         
     def handle_keys(self):
@@ -42,9 +42,9 @@ class Player(Box):
 
         # Precise threshold values to be decided.
 
-        h_collision_threshold = 18
-        v_collision_threshold = 22
-        # bottom_collision_threshold = 17
+        h_collision_threshold = 19
+        v_collision_threshold = 20
+        bottom_collision_threshold = 15
         
         collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=False)
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
@@ -63,12 +63,8 @@ class Player(Box):
             elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
                 self.boost_timer.deactivate()
                 self.right_bounce_timer.activate()
-
-            '''
-            Not needed now but could be useful later.
             elif abs(self.rect.top - collided_sprite.rect.bottom) < bottom_collision_threshold:
-                self.left_bounce_timer.activate()
-            '''
+                pass
         
         # Rock collision.
         if collide_rock:
@@ -100,6 +96,7 @@ class Player(Box):
         if self.left_bounce_timer.is_active:
             self.disable_input_and_lift()
             self.force = -11
+
         elif self.right_bounce_timer.is_active:
             self.disable_input_and_lift()
             self.force = 11
@@ -123,7 +120,7 @@ class Player(Box):
         pygame.event.set_blocked([self.key[pygame.K_LEFT]])
         pygame.event.set_blocked([self.key[pygame.K_RIGHT]])
         self.gravity_applied = False
-        self.rect.move_ip(0, -2)
+        self.rect.move_ip(0, -3)
         
     def update(self, level):
         self.handle_keys()
