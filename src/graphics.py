@@ -2,13 +2,7 @@ import pygame
 from timer import Timer
 
 class Box(pygame.sprite.Sprite):
-    def __init__(
-            self, 
-            pos_x: float, 
-            pos_y: float, 
-            width: float, 
-            height: float,
-    ):
+    def __init__(self, pos_x: float, pos_y: float, width: float, height: float):
         super().__init__()
         self.rect = pygame.rect.Rect((pos_x, pos_y, width, height))
 
@@ -16,27 +10,17 @@ class Box(pygame.sprite.Sprite):
         pygame.draw.rect(surface, self._color, self.rect)
 
 class Player(Box):
-    def __init__(
-            self, 
-            pos_x: float, 
-            pos_y: float, 
-            width: float, 
-            height: float
-    ):
-        super().__init__(
-            pos_x,
-            pos_y,
-            width,
-            height
-        )
+    def __init__(self, pos_x: float, pos_y: float, width: float, height: float):
+        super().__init__(pos_x, pos_y, width, height)
+        
         self._color = (255, 255, 255) # White.
         self.gravity = 0
         self.force = 0
         self.speed = 5
         self.direction = pygame.Vector2()
         self.gravity_applied = True
-        self.left_bounce_timer = Timer(150)
-        self.right_bounce_timer = Timer(150)
+        self.left_bounce_timer = Timer(200)
+        self.right_bounce_timer = Timer(200)
         self.boost_timer = Timer(1600)
         
     def handle_keys(self):
@@ -139,7 +123,7 @@ class Player(Box):
         pygame.event.set_blocked([self.key[pygame.K_LEFT]])
         pygame.event.set_blocked([self.key[pygame.K_RIGHT]])
         self.gravity_applied = False
-        self.rect.move_ip(0, -0.1)
+        self.rect.move_ip(0, -2)
         
     def update(self, level):
         self.handle_keys()
@@ -148,20 +132,9 @@ class Player(Box):
         self.check_collisions(level)
                         
 class Tile(Box):
-    def __init__(
-            self,
-            pos_x: float,
-            pos_y: float,
-            width: float,
-            height: float,
-            asset_path: str
-    ):
-        super().__init__(
-            pos_x,
-            pos_y,
-            width,
-            height,
-        )
+    def __init__(self, pos_x: float, pos_y: float, width: float, height: float, asset_path: str):
+        super().__init__(pos_x, pos_y, width, height)
+
         self.image = pygame.image.load(asset_path).convert()
 
 class Level:
@@ -322,6 +295,28 @@ class LevelSix(Level):
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        ]
+        
+    def __init__(self):
+        super().__init__()
+
+class LevelSeven(Level):
+    layout = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,1,1,1,2,2,2,2,2,2,2,2,0,4,4,0,1],
+            [1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]
         ]
         
     def __init__(self):
