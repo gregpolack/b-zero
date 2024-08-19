@@ -44,11 +44,12 @@ class Player(Box):
 
         h_collision_threshold = 19
         v_collision_threshold = 20
-        bottom_collision_threshold = 15
+        bottom_collision_threshold = 10
         
         collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=False)
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
         collide_walls = pygame.sprite.spritecollide(self, level.walls, dokill=False)
+        collide_ceiling = pygame.sprite.spritecollide(self, level.ceiling, dokill=False)
         collide_h_boost = pygame.sprite.spritecollide(self, level.h_boosts, dokill=False)
         collide_j_boost = pygame.sprite.spritecollide(self, level.j_boosts, dokill=False)
         collide_bomb = pygame.sprite.spritecollide(self, level.bombs, dokill=False)
@@ -64,9 +65,7 @@ class Player(Box):
             elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
                 self.boost_timer.deactivate()
                 self.right_bounce_timer.activate()
-            elif abs(self.rect.top - collided_sprite.rect.bottom) < bottom_collision_threshold:
-                pass
-        
+                
         if collide_walls:
             collided_sprite = collide_walls[0]
             if abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
@@ -75,6 +74,11 @@ class Player(Box):
             elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
                 self.boost_timer.deactivate()
                 self.right_bounce_timer.activate()
+        
+        if collide_ceiling:
+            collided_sprite = collide_ceiling[0]
+            if abs(self.rect.top - collided_sprite.rect.bottom) < bottom_collision_threshold:
+                self.gravity = 3.5
             
         # Rock collision.
         if collide_rock:
@@ -146,7 +150,7 @@ class Tile(Box):
 
 class Level:
     layout = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],
             [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
             [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
             [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
@@ -167,6 +171,7 @@ class Level:
         self.num_cols = 20
         self.floor = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
+        self.ceiling = pygame.sprite.Group()
         self.rocks = pygame.sprite.Group()
         self.h_boosts = pygame.sprite.Group()
         self.j_boosts = pygame.sprite.Group()
@@ -187,11 +192,14 @@ class Level:
                     self.bombs.add(Tile(j * 50, i * 50, 50, 50, "./assets/Bomb.jpg"))
                 if self.layout[i][j] == 6:
                     self.walls.add(Tile(j * 50, i * 50, 50, 50, "./assets/Box.jpg"))
+                if self.layout[i][j] == 7:
+                    self.ceiling.add(Tile(j * 50, i * 50, 50, 50, "./assets/Box.jpg"))
 
     def draw(self, screen):
         self.groups = [
             self.floor,
             self.walls,
+            self.ceiling,
             self.rocks,
             self.h_boosts,
             self.j_boosts,
@@ -203,7 +211,7 @@ class Level:
     
 class LevelTwo(Level):
     layout = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],
             [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
             [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
             [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
@@ -225,7 +233,7 @@ class LevelTwo(Level):
 
 class LevelThree(Level):
     layout = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],
             [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
             [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
             [6,1,1,1,1,1,0,2,2,1,1,1,1,0,0,0,0,0,0,6],
