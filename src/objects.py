@@ -194,7 +194,7 @@ class Level:
                     self.walls.add(Tile(j * 50, i * 50, 50, 50, "./assets/Box.jpg"))
                 if self.layout[i][j] == 7:
                     self.ceiling.add(Tile(j * 50, i * 50, 50, 50, "./assets/Box.jpg"))
-
+                
     def draw(self, screen):
         self.groups = [
             self.floor,
