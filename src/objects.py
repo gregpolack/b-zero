@@ -40,11 +40,9 @@ class Player(Box):
         
     def check_collisions(self, level):
 
-        # Precise threshold values to be decided.
-
-        h_collision_threshold = 19
-        v_collision_threshold = 23
-        bottom_collision_threshold = 10
+        H_COLLISION_THRESHOLD = 19
+        V_COLLISION_THREHSHOLD = 23
+        B_COLLISION_THRESHOLD = 10
         
         collide_rock = pygame.sprite.spritecollide(self, level.rocks, dokill=False)
         collide_floor = pygame.sprite.spritecollide(self, level.floor, dokill=False)
@@ -57,48 +55,49 @@ class Player(Box):
         # Floor collision.
         if collide_floor:
             collided_sprite = collide_floor[0]
-            if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
+            if abs(self.rect.bottom - collided_sprite.rect.top) < V_COLLISION_THREHSHOLD:
                 self.gravity = -11
-            elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
-                self.boost_timer.deactivate() # Deactivate Vertical Boost when player touches a wall.
+            elif abs(self.rect.right - collided_sprite.rect.left) < H_COLLISION_THRESHOLD:
+                # Deactivate VerticalBoost when player touches a wall.
+                self.boost_timer.deactivate() 
                 self.left_bounce_timer.activate()
-            elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
+            elif abs(self.rect.left - collided_sprite.rect.right) < H_COLLISION_THRESHOLD:
                 self.boost_timer.deactivate()
                 self.right_bounce_timer.activate()
                 
         if collide_walls:
             collided_sprite = collide_walls[0]
-            if abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
+            if abs(self.rect.right - collided_sprite.rect.left) < H_COLLISION_THRESHOLD:
                 self.boost_timer.deactivate()
                 self.left_bounce_timer.activate()
-            elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
+            elif abs(self.rect.left - collided_sprite.rect.right) < H_COLLISION_THRESHOLD:
                 self.boost_timer.deactivate()
                 self.right_bounce_timer.activate()
         
         if collide_ceiling:
             collided_sprite = collide_ceiling[0]
-            if abs(self.rect.top - collided_sprite.rect.bottom) < bottom_collision_threshold:
+            if abs(self.rect.top - collided_sprite.rect.bottom) < B_COLLISION_THRESHOLD:
                 self.gravity = 3.5
             
         # Rock collision.
         if collide_rock:
             collided_sprite = collide_rock[0]
-            if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
+            if abs(self.rect.bottom - collided_sprite.rect.top) < V_COLLISION_THREHSHOLD:
                 collided_sprite.kill()
                 self.gravity = -11
-            elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
+            elif abs(self.rect.right - collided_sprite.rect.left) < H_COLLISION_THRESHOLD:
                     self.left_bounce_timer.activate()
-            elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
+            elif abs(self.rect.left - collided_sprite.rect.right) < H_COLLISION_THRESHOLD:
                     self.right_bounce_timer.activate()
 
         # Vertical Boost collision.
         if collide_j_boost:
             collided_sprite = collide_j_boost[0]
-            if abs(self.rect.bottom - collided_sprite.rect.top) < v_collision_threshold:
+            if abs(self.rect.bottom - collided_sprite.rect.top) < V_COLLISION_THREHSHOLD:
                 self.gravity = -18
-            elif abs(self.rect.right - collided_sprite.rect.left) < h_collision_threshold:
+            elif abs(self.rect.right - collided_sprite.rect.left) < H_COLLISION_THRESHOLD:
                     self.left_bounce_timer.activate()
-            elif abs(self.rect.left - collided_sprite.rect.right) < h_collision_threshold:
+            elif abs(self.rect.left - collided_sprite.rect.right) < H_COLLISION_THRESHOLD:
                     self.right_bounce_timer.activate()
         
         if collide_bomb:
