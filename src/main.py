@@ -1,7 +1,16 @@
 import pygame
-from graphics import *
+from objects import *
 
-def check_level(player, current_level):
+HEIGHT = 1000
+WIDTH = 750
+FPS = 45
+
+    
+def check_state(player, screen, current_level):
+    font = pygame.font.SysFont(None, 88)
+    game_over_text = font.render("Game over", True, "white")
+    game_won_text = font.render("You won! Thanks for playing :)", True, "white")
+
     levels = [
         Level(),
         LevelTwo(),
@@ -12,34 +21,39 @@ def check_level(player, current_level):
         LevelSeven()
     ]
     
+    if player.rect.x < 0 or player.rect.y > 750 or player.rect.y < 0:
+        text_rect = game_over_text.get_rect()
+        text_rect.center = (HEIGHT // 2, WIDTH // 2)
+        screen.fill("black")
+        screen.blit(game_over_text, text_rect)
+
     for i in range(len(levels)):
         if player.rect.x >= 1000 and type(current_level) == type(levels[i]):
-            current_level = levels[i+1]
-            current_level.load_sprites()
-            if type(current_level) == type(LevelTwo()):
-                player = Player(100, 250, 7, 7)
-            elif type(current_level) == type(LevelFour()):
-                player = Player(100, 250, 7, 7)
-            elif type(current_level) == type(LevelSix()):
-                player = Player(800, 50, 7, 7)
-            elif type(current_level) == type(LevelSeven()):
-                player = Player(100, 500, 7, 7)
+            if type(current_level) == type(LevelSeven()) and player.rect.x > 1000:
+                text_rect = game_won_text.get_rect()
+                text_rect.center = (HEIGHT // 2, WIDTH // 2)
+                screen.fill("black")
+                screen.blit(game_won_text, text_rect)
             else:
-                player = Player(100, 50, 7, 7)
-                   
+                current_level = levels[i+1]
+                current_level.load_sprites()
+                if type(current_level) == type(LevelTwo()):
+                    player = Player(100, 250, 7, 7)
+                elif type(current_level) == type(LevelFour()):
+                    player = Player(100, 250, 7, 7)
+                elif type(current_level) == type(LevelSix()):
+                    player = Player(800, 50, 7, 7)
+                elif type(current_level) == type(LevelSeven()):
+                    player = Player(100, 500, 7, 7)
+                else:
+                    player = Player(100, 50, 7, 7)
+                    
     return player, current_level
 
 def main():
 
     # Initial game setup.
     pygame.init()
-    HEIGHT = 1000
-    WIDTH = 750
-    FPS = 45
-    font = pygame.font.SysFont(None, 88)
-    text = font.render("Game over", True, "white")
-    text_rect = text.get_rect()
-    text_rect.center = (HEIGHT // 2, WIDTH // 2)
     screen = pygame.display.set_mode((HEIGHT, WIDTH), pygame.SCALED | pygame.RESIZABLE)
     screen_color = "black"
     clock = pygame.time.Clock()
@@ -57,18 +71,13 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 is_running = False
+
         screen.fill(screen_color)
         player.draw(screen)
         player.update(current_level)
         current_level.draw(screen)
-
-        player, current_level = check_level(player, current_level)
-
-        # Check for game over state.
-        if player.rect.x < 0 or player.rect.y > 750 or player.rect.y < 0:
-            screen.fill(screen_color)
-            screen.blit(text, text_rect)
-    
+        player, current_level = check_state(player, screen, current_level)
+        
         pygame.display.flip()
     
     pygame.quit()
