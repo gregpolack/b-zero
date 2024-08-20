@@ -2,7 +2,7 @@
 
 ## A recreation of an old school physics-based 2D platformer.
 
-This is my very first solo project where I attempted to build all the core functionalities of Bound Plus also known as B-Zero - a 2003 puzzle game made in Japan. You can find a demonstration of how the original title looked like [here](https://www.youtube.com/watch?v=vS3yqmF_LCU). As of now the game made entirely with pygame has the folliwing features:
+This is my very first solo project where I attempted to build all the core functionalities of Bound Plus also known as B-Zero - a 2003 puzzle game made in Japan. You can find a demonstration of how the original title looked like [here](https://www.youtube.com/watch?v=vS3yqmF_LCU). So far the project made entirely with pygame has the following features:
 
 * The first 7 levels
 * A basic implementation of the game's physics
